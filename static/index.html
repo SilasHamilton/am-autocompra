@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Confirmador de Compras</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; }
+    label, textarea, input { display: block; width: 100%; margin-bottom: 15px; }
+    textarea { height: 100px; }
+    button { padding: 10px 20px; background: #2d89ef; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #1b5fbf; }
+    .resultado { margin-top: 20px; padding: 10px; border: 1px solid #ccc; white-space: pre-wrap; background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <h2>Confirmador de Compras - AM Tycoon</h2>
+  <form id="compra-form">
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" required>
+
+    <label for="links">Links (um por linha):</label>
+    <textarea id="links" required></textarea>
+
+    <button type="submit">Confirmar Compras</button>
+  </form>
+
+  <div class="resultado" id="resultado"></div>
+
+  <script>
+    document.getElementById("compra-form").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const senha = document.getElementById("senha").value;
+      const linksText = document.getElementById("links").value;
+      const links = linksText.split('\n').map(l => l.trim()).filter(l => l);
+
+      const res = await fetch("/executar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, senha, links })
+      });
+
+      const data = await res.json();
+      document.getElementById("resultado").textContent = JSON.stringify(data, null, 2);
+    });
+  </script>
+</body>
+</html>
